@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { MapPin, Mail, Link2, ChevronDown } from "lucide-react";
 
@@ -120,6 +121,29 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24">
+        {/* Profile photo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
+          className="relative inline-block mb-6"
+        >
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full p-[3px] bg-gradient-to-br from-blue-500 via-purple-500 to-teal-400 shadow-2xl mx-auto">
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#0a1628]">
+              <Image
+                src="/profile.jpeg"
+                alt="Bharath Pandi"
+                width={160}
+                height={160}
+                className="w-full h-full object-cover object-top"
+                priority
+              />
+            </div>
+          </div>
+          {/* Pulse ring */}
+          <span className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-4 h-4 rounded-full bg-green-400 border-2 border-[#050b18] shadow" />
+        </motion.div>
+
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

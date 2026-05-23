@@ -16,11 +16,16 @@ export const metadata: Metadata = {
   title: "Bharath Pandi — Technical Delivery Manager",
   description:
     "Over a decade of experience architecting and delivering enterprise-scale digital banking and fintech solutions across Singapore, Malaysia, and India.",
+  icons: {
+    icon: "/profile.jpeg",
+    apple: "/profile.jpeg",
+  },
   openGraph: {
     title: "Bharath Pandi — Technical Delivery Manager",
     description:
       "Seasoned Technical Delivery Manager with 16+ years in Banking, FinTech & E-Commerce. UOB Digital Banking | PayPal | Cognizant.",
     type: "website",
+    images: ["/profile.jpeg"],
   },
 };
 
