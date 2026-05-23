@@ -28,6 +28,12 @@ export interface Award {
   icon: string;
 }
 
+export interface Highlight {
+  title: string;
+  desc: string;
+  color: string;
+}
+
 export interface PortfolioData {
   personal: {
     name: string;
@@ -36,6 +42,9 @@ export interface PortfolioData {
     phone: string;
     location: string;
     linkedin: string;
+    github?: string;
+    website?: string;
+    photoUrl?: string;
     summary: string;
     available: boolean;
   };
@@ -45,6 +54,7 @@ export interface PortfolioData {
     description2: string;
     description3: string;
     tags: string[];
+    highlights?: Highlight[];
   };
   experience: Experience[];
   skillGroups: SkillGroup[];
@@ -68,8 +78,11 @@ export const defaultPortfolioData: PortfolioData = {
     phone: "+65 828-346-58",
     location: "Singapore, 530702",
     linkedin: "https://www.linkedin.com/in/bharath-pandi-b758005a",
+    github: "",
+    website: "",
+    photoUrl: "/profile.jpeg",
     summary:
-      "Over a decade of rich experience in design and development of web applications in Banking, Retail, E-commerce, Content Management System and Marketing domains. Well-rounded expertise in user experience & user interface. Ability to architect, develop efficient, highly reusable and scalable front-end systems that drive complex web applications. Ability to adapt to environmental and technical changes, seeking to learn and evolve to meet client needs.",
+      "Over a decade architecting enterprise-scale digital banking solutions across Singapore, Malaysia & beyond — bridging business vision with cutting-edge frontend engineering.",
     available: true,
   },
   stats: [
@@ -94,6 +107,28 @@ export const defaultPortfolioData: PortfolioData = {
       "Team Leadership",
       "React.js",
       "TypeScript",
+    ],
+    highlights: [
+      {
+        title: "Global Reach",
+        desc: "Delivered banking products across Singapore, China, Hong Kong, Malaysia and India",
+        color: "from-blue-500 to-cyan-400",
+      },
+      {
+        title: "People Leader",
+        desc: "Managed 6 squads, hiring, mentoring developers and maintaining healthy team culture",
+        color: "from-purple-500 to-pink-400",
+      },
+      {
+        title: "Full-Stack Architect",
+        desc: "Expert in React, TypeScript, Node.js — architecting scalable frontend systems since 2008",
+        color: "from-green-500 to-teal-400",
+      },
+      {
+        title: "Agile Delivery",
+        desc: "Release planning, sprint ceremonies, stakeholder demos and CI/CD quality gating",
+        color: "from-orange-500 to-yellow-400",
+      },
     ],
   },
   experience: [
@@ -260,4 +295,50 @@ export const defaultPortfolioData: PortfolioData = {
     "Marketing Tech",
     "Pharma E-Commerce",
   ],
+};
+
+export const emptyPortfolioData: PortfolioData = {
+  personal: {
+    name: "",
+    title: "",
+    email: "",
+    phone: "",
+    location: "",
+    linkedin: "",
+    github: "",
+    website: "",
+    photoUrl: "",
+    summary: "",
+    available: true,
+  },
+  stats: [
+    { value: "", label: "Years Experience" },
+    { value: "", label: "Projects Delivered" },
+    { value: "", label: "Teams Led" },
+    { value: "", label: "Technologies" },
+  ],
+  about: {
+    description1: "",
+    description2: "",
+    description3: "",
+    tags: [],
+    highlights: [
+      { title: "Your Strength 1", desc: "Describe a key strength or achievement here.", color: "from-blue-500 to-cyan-400" },
+      { title: "Your Strength 2", desc: "Describe another key strength or achievement here.", color: "from-purple-500 to-pink-400" },
+      { title: "Your Strength 3", desc: "Describe a third strength or achievement here.", color: "from-green-500 to-teal-400" },
+      { title: "Your Strength 4", desc: "Describe a fourth strength or achievement here.", color: "from-orange-500 to-yellow-400" },
+    ],
+  },
+  experience: [],
+  skillGroups: [],
+  techBadges: [],
+  awards: [],
+  education: {
+    degree: "",
+    institution: "",
+    period: "",
+    color: "from-teal-500 to-green-400",
+  },
+  languages: [],
+  domainExpertise: [],
 };

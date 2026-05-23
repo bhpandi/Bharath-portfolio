@@ -3,32 +3,15 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, MapPin, Link2, Send } from "lucide-react";
+import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
-const contactLinks = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "baratfullstackengg@gmail.com",
-    href: "mailto:baratfullstackengg@gmail.com",
-    color: "from-blue-500 to-cyan-400",
-  },
-  {
-    icon: Link2,
-    label: "LinkedIn",
-    value: "bharath-pandi-b758005a",
-    href: "https://www.linkedin.com/in/bharath-pandi-b758005a",
-    color: "from-blue-600 to-indigo-400",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Singapore, 530702",
-    href: "#",
-    color: "from-green-500 to-teal-400",
-  },
-];
-
-export default function Contact() {
+export default function Contact({ data = defaultPortfolioData }: { data?: PortfolioData }) {
+  const { personal } = data;
+  const contactLinks = [
+    { icon: Mail, label: "Email", value: personal.email, href: `mailto:${personal.email}`, color: "from-blue-500 to-cyan-400" },
+    { icon: Link2, label: "LinkedIn", value: personal.linkedin.replace("https://www.linkedin.com/in/", ""), href: personal.linkedin, color: "from-blue-600 to-indigo-400" },
+    { icon: MapPin, label: "Location", value: personal.location, href: "#", color: "from-green-500 to-teal-400" },
+  ];
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -86,7 +69,7 @@ export default function Contact() {
           className="text-center"
         >
           <a
-            href="mailto:baratfullstackengg@gmail.com"
+            href={`mailto:${personal.email}`}
             className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all shadow-xl hover:shadow-blue-500/30 hover:-translate-y-1 glow-blue"
           >
             <Send size={20} />

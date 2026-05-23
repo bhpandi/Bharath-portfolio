@@ -3,92 +3,15 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
-const experiences = [
-  {
-    role: "Technical Delivery Lead",
-    company: "UOB Singapore",
-    vendor: "Optimum Solutions",
-    period: "Jun 2023 – Present",
-    location: "Singapore",
-    color: "from-blue-500 to-cyan-400",
-    badge: "Current",
-    points: [
-      "Technical Delivery Manager for UOB Infinity Digital Banking Application",
-      "Delivered banking products across Singapore, China, Hong Kong & Malaysia — including soft token, scan & pay, push notifications, IAFT, IBFT, PayNow, Bulk Payroll, Telegraphic Transfer, MT101, FI, UOBPAY, DuitNow, FPX, FPS, CNAPS",
-      "Lead & provide technical guidance and architecture solutions to the squad",
-      "Collaborate with business and designers to finalise requirements and translate to development specifications",
-      "Setup project scaffolding, enforce code quality as gatekeeper, lead sprint demos to Product Owner",
-      "Hands-on in code reviews and deployment pipeline management",
-    ],
-  },
-  {
-    role: "Tribe Lead",
-    company: "UOB Singapore",
-    vendor: "The Boston Software Solutions International Pte Ltd",
-    period: "Jan 2022 – Jun 2023",
-    location: "Singapore",
-    color: "from-purple-500 to-indigo-400",
-    badge: "Leadership",
-    points: [
-      "Tribe Lead for UOB Infinity Digital Banking Application — Malaysia",
-      "Managed 6 squads across parallel feature delivery tracks",
-      "Responsible for release planning, estimation, goal-setting, delivery and all Scrum ceremonies",
-      "Monitored progress, mitigated risks and cleared blockers with stakeholders",
-      "Hired and mentored new developers; maintained a healthy, high-performance team culture",
-      "Demonstrated sprint deliverables to Product Owners at each sprint review",
-    ],
-  },
-  {
-    role: "Senior Member of Technical Staff",
-    company: "PayPal",
-    vendor: "",
-    period: "Nov 2014 – Dec 2018",
-    location: "Chennai, India",
-    color: "from-teal-500 to-green-400",
-    badge: "FinTech",
-    points: [
-      "Technical Lead for the EMEA region in the PayPal MPP team",
-      "Developed responsive UI prototypes using React.js, Dust.js, HTML5, CSS3, and JavaScript",
-      "Maintained brand consistency and created engaging marketing campaigns across the EMEA region",
-      "Automated unit testing with Node.js to significantly enhance deployment quality",
-    ],
-  },
-  {
-    role: "Associate Projects",
-    company: "Cognizant Technology Solutions",
-    vendor: "",
-    period: "Jun 2012 – Nov 2014",
-    location: "Bangalore, India",
-    color: "from-orange-500 to-amber-400",
-    badge: "E-Commerce",
-    points: [
-      "Module Lead for The Home Depot E-Commerce Portal — one of the largest US home improvement retailers",
-      "Led sprint planning, resource allocation, and RESTful API development",
-      "Conducted unit testing with QUnit and performed rigorous code reviews using Crucible",
-    ],
-  },
-  {
-    role: "Web Developer",
-    company: "EC Software India PVT LTD",
-    vendor: "",
-    period: "Mar 2008 – Jun 2012",
-    location: "Chennai, India",
-    color: "from-rose-500 to-pink-400",
-    badge: "Foundation",
-    points: [
-      "Developed and maintained Lifebutiken — a Swedish pharmaceutical e-commerce platform",
-      "Created VBA macros for seamless API integrations",
-      "Optimised UI performance, significantly improving user experience across the platform",
-    ],
-  },
-];
+import type { Experience as ExperienceType } from "@/data/portfolio";
 
 function TimelineItem({
   exp,
   index,
 }: {
-  exp: (typeof experiences)[0];
+  exp: ExperienceType;
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -132,7 +55,7 @@ function TimelineItem({
   );
 }
 
-function ExperienceCard({ exp }: { exp: (typeof experiences)[0] }) {
+function ExperienceCard({ exp }: { exp: ExperienceType }) {
   return (
     <div className="glass-card rounded-2xl p-6 card-hover h-full">
       {/* Header */}
@@ -167,7 +90,7 @@ function ExperienceCard({ exp }: { exp: (typeof experiences)[0] }) {
       </div>
 
       <ul className="space-y-2">
-        {exp.points.map((pt, i) => (
+        {exp.points.filter((pt) => pt.trim()).map((pt, i) => (
           <li key={i} className="flex items-start gap-2 text-slate-400 text-sm leading-relaxed">
             <span className={`mt-1.5 w-1.5 h-1.5 rounded-full bg-gradient-to-br ${exp.color} flex-shrink-0`} />
             {pt}
@@ -178,7 +101,9 @@ function ExperienceCard({ exp }: { exp: (typeof experiences)[0] }) {
   );
 }
 
-export default function Experience() {
+export default function Experience({ data = defaultPortfolioData }: { data?: PortfolioData }) {
+  const experiences = data.experience ?? [];
+  if (experiences.length === 0) return null;
   const titleRef = useRef<HTMLDivElement>(null);
   const titleInView = useInView(titleRef, { once: true });
 

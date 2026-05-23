@@ -3,15 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin, Mail, Link2, ChevronDown } from "lucide-react";
+import { MapPin, Mail, Link2, Globe, ChevronDown } from "lucide-react";
 import DownloadResume from "./DownloadResume";
-
-const titles = [
-  "Technical Delivery Manager",
-  "Frontend Architect",
-  "Digital Banking Expert",
-  "Agile Tribe Lead",
-];
+import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
 function useTypingCycle(words: string[], pause = 1800) {
   const [index, setIndex] = useState(0);
@@ -96,31 +90,41 @@ function ParticleCanvas() {
   return <canvas ref={canvasRef} className="particles-canvas w-full h-full" />;
 }
 
-const stats = [
-  { value: "16+", label: "Years Experience" },
-  { value: "5", label: "Countries Served" },
-  { value: "10+", label: "Banking Products" },
-  { value: "6", label: "Squads Led" },
-];
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase())
+    .slice(0, 2)
+    .join("");
+}
 
-export default function Hero() {
-  const title = useTypingCycle(titles);
+export default function Hero({ data = defaultPortfolioData }: { data?: PortfolioData }) {
+  const { personal, stats } = data;
+  const [imgError, setImgError] = useState(false);
+
+  const typingWords = [
+    personal.title || "Professional",
+    ...(data.about.tags?.slice(0, 3) ?? []),
+  ].filter(Boolean);
+
+  const title = useTypingCycle(typingWords.length > 0 ? typingWords : ["Professional"]);
+
+  const photoSrc = personal.photoUrl && !imgError ? personal.photoUrl : null;
+  const initials = getInitials(personal.name || "P");
+  const firstName = personal.name.split(" ")[0] || "Your";
+  const lastName = personal.name.split(" ").slice(1).join(" ") || "Name";
+  const activeStats = stats.filter((s) => s.value.trim());
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden animated-bg"
-    >
-      {/* Particle background */}
+    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden animated-bg">
       <div className="absolute inset-0">
         <ParticleCanvas />
       </div>
 
-      {/* Radial glows */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-purple-600/8 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24">
         {/* Profile photo */}
         <motion.div
@@ -130,31 +134,39 @@ export default function Hero() {
           className="relative inline-block mb-6"
         >
           <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full p-[3px] bg-gradient-to-br from-blue-500 via-purple-500 to-teal-400 shadow-2xl mx-auto">
-            <div className="w-full h-full rounded-full overflow-hidden bg-[#0a1628]">
-              <Image
-                src="/profile.jpeg"
-                alt="Bharath Pandi"
-                width={160}
-                height={160}
-                className="w-full h-full object-cover object-top"
-                priority
-              />
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#0a1628] flex items-center justify-center">
+              {photoSrc ? (
+                <Image
+                  src={photoSrc}
+                  alt={personal.name || "Profile"}
+                  width={160}
+                  height={160}
+                  className="w-full h-full object-cover object-top"
+                  priority
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <span className="text-3xl sm:text-4xl font-extrabold gradient-text">{initials}</span>
+              )}
             </div>
           </div>
-          {/* Pulse ring */}
-          <span className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-4 h-4 rounded-full bg-green-400 border-2 border-[#050b18] shadow" />
+          {personal.available && (
+            <span className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-4 h-4 rounded-full bg-green-400 border-2 border-[#050b18] shadow" />
+          )}
         </motion.div>
 
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8"
-        >
-          <span className="w-2 h-2 rounded-full bg-green-400 pulse-ring" />
-          Available for opportunities
-        </motion.div>
+        {/* Available badge */}
+        {personal.available && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8"
+          >
+            <span className="w-2 h-2 rounded-full bg-green-400 pulse-ring" />
+            Available for opportunities
+          </motion.div>
+        )}
 
         {/* Name */}
         <motion.h1
@@ -163,8 +175,8 @@ export default function Hero() {
           transition={{ delay: 0.35, duration: 0.7 }}
           className="text-5xl sm:text-7xl font-extrabold text-white mb-4 tracking-tight leading-none"
         >
-          Bharath{" "}
-          <span className="gradient-text">Pandi</span>
+          {firstName}{" "}
+          <span className="gradient-text">{lastName}</span>
         </motion.h1>
 
         {/* Typing title */}
@@ -178,17 +190,17 @@ export default function Hero() {
           <span className="cursor-blink text-yellow-400 text-2xl">|</span>
         </motion.div>
 
-        {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65 }}
-          className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          Over a decade architecting enterprise-scale digital banking solutions across
-          Singapore, Malaysia & beyond. Bridging business vision with
-          cutting-edge frontend engineering.
-        </motion.p>
+        {/* Summary */}
+        {personal.summary && (
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+            className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            {personal.summary}
+          </motion.p>
+        )}
 
         {/* Contact chips */}
         <motion.div
@@ -197,26 +209,36 @@ export default function Hero() {
           transition={{ delay: 0.75 }}
           className="flex flex-wrap items-center justify-center gap-3 mb-10"
         >
-          <a
-            href="mailto:baratfullstackengg@gmail.com"
-            className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40"
-          >
-            <Mail size={14} className="text-blue-400" />
-            baratfullstackengg@gmail.com
-          </a>
-          <span className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 text-sm">
-            <MapPin size={14} className="text-green-400" />
-            Singapore
-          </span>
-          <a
-            href="https://www.linkedin.com/in/bharath-pandi-b758005a"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40"
-          >
-            <Link2 size={14} className="text-blue-400" />
-            LinkedIn
-          </a>
+          {personal.email && (
+            <a href={`mailto:${personal.email}`} className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40">
+              <Mail size={14} className="text-blue-400" />
+              {personal.email}
+            </a>
+          )}
+          {personal.location && (
+            <span className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 text-sm">
+              <MapPin size={14} className="text-green-400" />
+              {personal.location.split(",")[0]}
+            </span>
+          )}
+          {personal.linkedin && (
+            <a href={personal.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40">
+              <Link2 size={14} className="text-blue-400" />
+              LinkedIn
+            </a>
+          )}
+          {personal.github && (
+            <a href={personal.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40">
+              <Link2 size={14} className="text-slate-400" />
+              GitHub
+            </a>
+          )}
+          {personal.website && (
+            <a href={personal.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-slate-300 hover:text-white text-sm transition-all hover:border-blue-500/40">
+              <Globe size={14} className="text-teal-400" />
+              Website
+            </a>
+          )}
         </motion.div>
 
         {/* CTA buttons */}
@@ -226,21 +248,17 @@ export default function Hero() {
           transition={{ delay: 0.85 }}
           className="flex flex-wrap gap-4 justify-center mb-20"
         >
-          <a
-            href="#experience"
-            className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5"
-          >
+          <a href="#experience" className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5">
             View Experience
           </a>
-          <a
-            href="mailto:baratfullstackengg@gmail.com"
-            className="px-8 py-3 rounded-xl glass-card text-slate-300 hover:text-white font-semibold transition-all hover:border-white/20 hover:-translate-y-0.5"
-          >
-            Get in Touch
-          </a>
+          {personal.email && (
+            <a href={`mailto:${personal.email}`} className="px-8 py-3 rounded-xl glass-card text-slate-300 hover:text-white font-semibold transition-all hover:border-white/20 hover:-translate-y-0.5">
+              Get in Touch
+            </a>
+          )}
         </motion.div>
 
-        {/* Resume download buttons */}
+        {/* Resume download */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -251,28 +269,29 @@ export default function Hero() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.7 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto"
-        >
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.1 + i * 0.1 }}
-              className="glass-card rounded-2xl p-5 card-hover"
-            >
-              <div className="text-3xl font-extrabold gradient-text mb-1">{s.value}</div>
-              <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">{s.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {activeStats.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.7 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto"
+          >
+            {activeStats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.1 + i * 0.1 }}
+                className="glass-card rounded-2xl p-5 card-hover"
+              >
+                <div className="text-3xl font-extrabold gradient-text mb-1">{s.value}</div>
+                <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">{s.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
-      {/* Scroll indicator */}
       <motion.a
         href="#about"
         initial={{ opacity: 0 }}

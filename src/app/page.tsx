@@ -6,22 +6,27 @@ import Skills from "@/components/Skills";
 import Awards from "@/components/Awards";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { getPortfolioData } from "@/lib/portfolio-store";
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Home() {
+  const data = await getPortfolioData();
+
   return (
     <main>
       <Navbar />
-      <Hero />
+      <Hero data={data} />
       <div className="section-divider" />
-      <About />
+      <About data={data} />
       <div className="section-divider" />
-      <Experience />
+      <Experience data={data} />
       <div className="section-divider" />
-      <Skills />
+      <Skills data={data} />
       <div className="section-divider" />
-      <Awards />
+      <Awards data={data} />
       <div className="section-divider" />
-      <Contact />
+      <Contact data={data} />
       <Footer />
     </main>
   );
