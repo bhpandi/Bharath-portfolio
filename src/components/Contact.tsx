@@ -22,7 +22,7 @@ const contactLinks = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Singapore, 560319",
+    value: "Singapore, 530702",
     href: "#",
     color: "from-green-500 to-teal-400",
   },
