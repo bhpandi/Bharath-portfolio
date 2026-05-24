@@ -1,13 +1,17 @@
+import { put, list } from "@vercel/blob";
 import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
-const BLOB_URL_KEY = "PORTFOLIO_BLOB_URL";
+const PORTFOLIO_KEY = "portfolio-data.json";
 
-// Read published portfolio data (Blob → default fallback)
 export async function getPortfolioData(): Promise<PortfolioData> {
-  const url = process.env[BLOB_URL_KEY];
-  if (!url) return defaultPortfolioData;
   try {
-    const res = await fetch(url, { next: { tags: ["portfolio-data"], revalidate: 0 } });
+    const { blobs } = await list({ prefix: "portfolio-data", limit: 1 });
+    if (!blobs.length) return defaultPortfolioData;
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    const res = await fetch(blobs[0].url, {
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     if (!res.ok) return defaultPortfolioData;
     return await res.json();
   } catch {
@@ -15,26 +19,14 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   }
 }
 
-// Write published portfolio data to Vercel Blob
 export async function publishPortfolioData(
   data: PortfolioData
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
-    return {
-      ok: false,
-      error:
-        "BLOB_READ_WRITE_TOKEN not set. Add a Blob store in Vercel Dashboard → Storage, then run `vercel env pull`.",
-    };
-  }
-
   try {
-    const { put } = await import("@vercel/blob");
-    const blob = await put("portfolio-data.json", JSON.stringify(data), {
-      access: "public",
+    const blob = await put(PORTFOLIO_KEY, JSON.stringify(data), {
+      access: "private",
       contentType: "application/json",
       allowOverwrite: true,
-      token,
     });
     return { ok: true, url: blob.url };
   } catch (e) {

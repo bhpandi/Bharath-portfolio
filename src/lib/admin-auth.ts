@@ -18,7 +18,7 @@ interface AdminCredentials {
 const CRED_KEY = "admin-credentials.json";
 
 export function isBlobConfigured(): boolean {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 export async function getAdminCredentials(): Promise<AdminCredentials | null> {
@@ -26,7 +26,11 @@ export async function getAdminCredentials(): Promise<AdminCredentials | null> {
   try {
     const { blobs } = await list({ prefix: "admin-credentials", limit: 1 });
     if (!blobs.length) return null;
-    const res = await fetch(blobs[0].url, { cache: "no-store" });
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    const res = await fetch(blobs[0].url, {
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     if (!res.ok) return null;
     return (await res.json()) as AdminCredentials;
   } catch {
@@ -103,10 +107,15 @@ export async function createAdminAccount(
     iterations: ITERATIONS,
   };
 
-  await put(CRED_KEY, JSON.stringify(credentials), {
-    access: "public",
-    addRandomSuffix: false,
-  });
+  try {
+    await put(CRED_KEY, JSON.stringify(credentials), {
+      access: "private",
+      addRandomSuffix: false,
+    });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: `Blob write failed: ${msg}` };
+  }
 
   return { ok: true };
 }
