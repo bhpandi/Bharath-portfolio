@@ -80,7 +80,7 @@ export const defaultPortfolioData: PortfolioData = {
     linkedin: "https://www.linkedin.com/in/bharath-pandi-b758005a",
     github: "",
     website: "",
-    photoUrl: "/profile.jpeg",
+    photoUrl: "/profile-avatar.png",
     summary:
       "Over a decade architecting enterprise-scale digital banking solutions across Singapore, Malaysia & beyond — bridging business vision with cutting-edge frontend engineering.",
     available: true,
