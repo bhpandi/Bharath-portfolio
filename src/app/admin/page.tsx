@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   defaultPortfolioData,
   emptyPortfolioData,
@@ -391,36 +391,109 @@ function ProfileTab({ data, onChange }: { data: PortfolioData; onChange: (d: Por
   const set = (key: keyof typeof p, val: string | boolean) =>
     onChange({ ...data, personal: { ...p, [key]: val } });
 
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+
   const initials = p.name
     .split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase() || "?";
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadErr("");
+    const fd = new FormData();
+    fd.append("file", file);
+    try {
+      const res = await fetch("/api/admin/upload-photo", { method: "POST", body: fd });
+      const json = await res.json();
+      if (res.ok) {
+        set("photoUrl", json.url);
+      } else {
+        setUploadErr(json.error ?? "Upload failed.");
+      }
+    } catch {
+      setUploadErr("Network error. Please try again.");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Photo preview */}
+      {/* Photo upload */}
       <div className="glass-card rounded-2xl p-6">
         <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
           <span className="w-1.5 h-4 rounded-full bg-gradient-to-b from-blue-500 to-purple-500 inline-block" />
           Profile Photo
         </h3>
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-blue-500 via-purple-500 to-teal-400 flex-shrink-0">
-            <div className="w-full h-full rounded-full bg-[#0a1628] flex items-center justify-center overflow-hidden">
-              {p.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.photoUrl} alt="preview" className="w-full h-full object-cover object-top" />
-              ) : (
-                <span className="text-xl font-bold gradient-text">{initials}</span>
-              )}
+        <div className="flex items-start gap-6">
+          {/* Avatar preview */}
+          <div className="flex-shrink-0">
+            <div className="w-24 h-24 rounded-full p-[2px] bg-gradient-to-br from-blue-500 via-purple-500 to-teal-400">
+              <div className="w-full h-full rounded-full bg-[#0a1628] flex items-center justify-center overflow-hidden">
+                {uploading ? (
+                  <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                ) : p.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.photoUrl} alt="preview" className="w-full h-full object-cover object-top" />
+                ) : (
+                  <span className="text-2xl font-bold gradient-text">{initials}</span>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex-1">
-            <Field
-              label="Photo URL"
-              value={p.photoUrl ?? ""}
-              onChange={(v) => set("photoUrl", v)}
-              placeholder="/profile.jpeg or https://..."
-              hint="Use a relative path like /profile.jpeg or a full HTTPS URL"
+
+          {/* Upload controls */}
+          <div className="flex-1 space-y-3">
+            {/* Hidden file input */}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileUpload}
             />
+
+            {/* Upload button */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/80 to-purple-600/80 hover:from-blue-600 hover:to-purple-600 text-white text-sm font-semibold transition-all disabled:opacity-50 w-full justify-center"
+            >
+              <Upload size={15} />
+              {uploading ? "Uploading…" : "Upload Photo"}
+            </button>
+            <p className="text-slate-600 text-xs text-center">JPEG, PNG, WebP or GIF · max 5 MB</p>
+
+            {uploadErr && (
+              <div className="flex items-center gap-2 text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">
+                <AlertCircle size={13} className="flex-shrink-0" />
+                {uploadErr}
+              </div>
+            )}
+
+            {/* Manual URL fallback */}
+            <div className="pt-1">
+              <Field
+                label="Or paste URL"
+                value={p.photoUrl ?? ""}
+                onChange={(v) => set("photoUrl", v)}
+                placeholder="https://example.com/photo.jpg"
+                hint="Clear the field to show initials instead"
+              />
+            </div>
+
+            {p.photoUrl && (
+              <button
+                onClick={() => { set("photoUrl", ""); setUploadErr(""); }}
+                className="text-slate-600 hover:text-red-400 text-xs transition-colors"
+              >
+                ✕ Remove photo
+              </button>
+            )}
           </div>
         </div>
       </div>
