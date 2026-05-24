@@ -9,7 +9,9 @@ const MAX_BODY = 512 * 1024; // 512 KB
 
 export async function GET() {
   const data = await getPortfolioData();
-  return NextResponse.json(data);
+  return NextResponse.json(data, {
+    headers: { "Cache-Control": "no-store" },
+  });
 }
 
 export async function POST(req: NextRequest) {

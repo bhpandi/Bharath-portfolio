@@ -908,7 +908,7 @@ export default function AdminPage() {
   const [style, setStyle] = useState<ResumeStyle>("classic");
   const [downloading, setDownloading] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [publishMsg, setPublishMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [publishMsg, setPublishMsg] = useState<{ ok: boolean; text: string; showLink?: boolean } | null>(null);
   const [unsaved, setUnsaved] = useState(false);
 
   useEffect(() => {
@@ -953,12 +953,12 @@ export default function AdminPage() {
     const json = await res.json();
     setPublishing(false);
     if (res.ok) {
-      setPublishMsg({ ok: true, text: "Published! Portfolio updated live." });
+      setPublishMsg({ ok: true, text: "Published! Your portfolio is now live.", showLink: true });
       setUnsaved(false);
     } else {
       setPublishMsg({ ok: false, text: json.error ?? "Publish failed. Check Vercel Blob is configured." });
     }
-    setTimeout(() => setPublishMsg(null), 6000);
+    setTimeout(() => setPublishMsg(null), 10000);
   };
 
   const exportJson = () => {
@@ -1030,17 +1030,27 @@ export default function AdminPage() {
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xs font-bold transition-all disabled:opacity-50 shadow-lg shadow-green-900/20">
               <Upload size={13} /> {publishing ? "Publishing…" : "Publish Live"}
             </button>
-            <a href="/" className="p-1.5 text-slate-600 hover:text-slate-400 transition-colors" title="View portfolio">
+            <a href="/" className="p-1.5 text-slate-600 hover:text-slate-400 transition-colors" title="View portfolio" target="_blank" rel="noopener noreferrer">
               <LogOut size={16} />
             </a>
           </div>
         </div>
 
         {publishMsg && (
-          <div className={`px-6 py-2.5 text-xs font-medium text-center border-t ${publishMsg.ok ? "bg-green-600/15 text-green-400 border-green-500/20" : "bg-red-600/15 text-red-400 border-red-500/20"}`}>
-            {publishMsg.text}
+          <div className={`px-6 py-2.5 text-xs font-medium text-center border-t flex items-center justify-center gap-3 ${publishMsg.ok ? "bg-green-600/15 text-green-400 border-green-500/20" : "bg-red-600/15 text-red-400 border-red-500/20"}`}>
+            <span>{publishMsg.text}</span>
+            {publishMsg.showLink && (
+              <a
+                href={`/?t=${Date.now()}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-green-500/20 hover:bg-green-500/30 text-green-300 font-semibold transition-colors text-xs border border-green-500/30"
+              >
+                View Portfolio →
+              </a>
+            )}
             {!publishMsg.ok && (
-              <span className="ml-2 text-slate-500">→ Set up Vercel Blob in your Vercel Dashboard under Storage.</span>
+              <span className="text-slate-500">→ Set up Vercel Blob in your Vercel Dashboard under Storage.</span>
             )}
           </div>
         )}

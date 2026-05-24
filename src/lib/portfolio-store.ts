@@ -1,18 +1,18 @@
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 import { unstable_noStore as noStore } from "next/cache";
 import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
-const PORTFOLIO_KEY = "portfolio-data.json";
+// Prefix for all portfolio data blobs
+const PORTFOLIO_PREFIX = "portfolio-data";
 
 export async function getPortfolioData(): Promise<PortfolioData> {
   noStore(); // always fetch fresh — never use Next.js data cache
   try {
-    const { blobs } = await list({ prefix: "portfolio-data", limit: 1 });
+    // list() returns newest blob first; we always read the latest publish
+    const { blobs } = await list({ prefix: PORTFOLIO_PREFIX, limit: 1 });
     if (!blobs.length) return defaultPortfolioData;
-    const token = process.env.BLOB_READ_WRITE_TOKEN;
     const res = await fetch(blobs[0].url, {
       cache: "no-store",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     if (!res.ok) return defaultPortfolioData;
     return await res.json();
@@ -25,11 +25,22 @@ export async function publishPortfolioData(
   data: PortfolioData
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   try {
-    const blob = await put(PORTFOLIO_KEY, JSON.stringify(data), {
+    // Snapshot existing blobs BEFORE writing so we can clean them up
+    const { blobs: existing } = await list({ prefix: PORTFOLIO_PREFIX, limit: 20 });
+
+    // Each publish gets a unique timestamped key → fresh CDN URL, no stale cache
+    const key = `${PORTFOLIO_PREFIX}-${Date.now()}.json`;
+    const blob = await put(key, JSON.stringify(data), {
       access: "public",
       contentType: "application/json",
-      allowOverwrite: true,
+      addRandomSuffix: false,
     });
+
+    // Delete previous blobs after the new one is safely written
+    if (existing.length > 0) {
+      await Promise.all(existing.map((b) => del(b.url)));
+    }
+
     return { ok: true, url: blob.url };
   } catch (e) {
     return { ok: false, error: String(e) };
