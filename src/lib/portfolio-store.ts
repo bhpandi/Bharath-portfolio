@@ -1,9 +1,11 @@
 import { put, list } from "@vercel/blob";
+import { unstable_noStore as noStore } from "next/cache";
 import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
 const PORTFOLIO_KEY = "portfolio-data.json";
 
 export async function getPortfolioData(): Promise<PortfolioData> {
+  noStore(); // always fetch fresh — never use Next.js data cache
   try {
     const { blobs } = await list({ prefix: "portfolio-data", limit: 1 });
     if (!blobs.length) return defaultPortfolioData;

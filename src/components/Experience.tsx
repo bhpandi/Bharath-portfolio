@@ -7,57 +7,9 @@ import { defaultPortfolioData, type PortfolioData } from "@/data/portfolio";
 
 import type { Experience as ExperienceType } from "@/data/portfolio";
 
-function TimelineItem({
-  exp,
-  index,
-}: {
-  exp: ExperienceType;
-  index: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative grid md:grid-cols-[1fr_auto_1fr] gap-0 md:gap-8 mb-8"
-    >
-      {/* Left side — even items */}
-      <div className={`${index % 2 === 0 ? "block" : "hidden md:block"}`}>
-        {index % 2 === 0 && <ExperienceCard exp={exp} />}
-      </div>
-
-      {/* Timeline dot */}
-      <div className="hidden md:flex flex-col items-center">
-        <div
-          className={`w-4 h-4 rounded-full bg-gradient-to-br ${exp.color} shadow-lg mt-6 flex-shrink-0 relative`}
-        >
-          <div
-            className={`absolute inset-0 rounded-full bg-gradient-to-br ${exp.color} opacity-40 scale-[2] animate-ping`}
-          />
-        </div>
-        <div className="w-px flex-1 timeline-line min-h-[40px] mt-1" />
-      </div>
-
-      {/* Right side — odd items */}
-      <div className={`${index % 2 !== 0 ? "block" : "hidden md:block"}`}>
-        {index % 2 !== 0 && <ExperienceCard exp={exp} />}
-      </div>
-
-      {/* Mobile: always show */}
-      <div className="md:hidden col-span-full">
-        {index % 2 === 0 ? null : <ExperienceCard exp={exp} />}
-      </div>
-    </motion.div>
-  );
-}
-
 function ExperienceCard({ exp }: { exp: ExperienceType }) {
   return (
-    <div className="glass-card rounded-2xl p-6 card-hover h-full">
+    <div className="glass-card rounded-2xl p-5 sm:p-6 card-hover h-full">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div
@@ -72,7 +24,7 @@ function ExperienceCard({ exp }: { exp: ExperienceType }) {
         </span>
       </div>
 
-      <h3 className="text-white font-bold text-lg leading-tight mb-1">{exp.role}</h3>
+      <h3 className="text-white font-bold text-base sm:text-lg leading-tight mb-1">{exp.role}</h3>
       <p className="text-slate-300 font-medium text-sm mb-1">{exp.company}</p>
       {exp.vendor && (
         <p className="text-slate-500 text-xs mb-3">{exp.vendor}</p>
@@ -101,6 +53,69 @@ function ExperienceCard({ exp }: { exp: ExperienceType }) {
   );
 }
 
+function TimelineItem({
+  exp,
+  index,
+}: {
+  exp: ExperienceType;
+  index: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const isLeft = index % 2 === 0;
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative mb-8"
+    >
+      {/* ── Desktop: alternating two-column layout ── */}
+      <div className="hidden md:grid md:grid-cols-[1fr_auto_1fr] md:gap-8">
+        {/* Left slot */}
+        <div>{isLeft ? <ExperienceCard exp={exp} /> : null}</div>
+
+        {/* Timeline dot + line */}
+        <div className="flex flex-col items-center">
+          <div
+            className={`w-4 h-4 rounded-full bg-gradient-to-br ${exp.color} shadow-lg mt-6 flex-shrink-0 relative`}
+          >
+            <div
+              className={`absolute inset-0 rounded-full bg-gradient-to-br ${exp.color} opacity-40 scale-[2] animate-ping`}
+            />
+          </div>
+          <div className="w-px flex-1 timeline-line min-h-[40px] mt-1" />
+        </div>
+
+        {/* Right slot */}
+        <div>{!isLeft ? <ExperienceCard exp={exp} /> : null}</div>
+      </div>
+
+      {/* ── Mobile: single column with left accent line ── */}
+      <div className="md:hidden flex gap-4">
+        {/* Accent dot + line */}
+        <div className="flex flex-col items-center flex-shrink-0 pt-1">
+          <div
+            className={`w-3 h-3 rounded-full bg-gradient-to-br ${exp.color} shadow-lg flex-shrink-0 relative`}
+          >
+            <div
+              className={`absolute inset-0 rounded-full bg-gradient-to-br ${exp.color} opacity-40 scale-[2] animate-ping`}
+            />
+          </div>
+          <div className="w-px flex-1 timeline-line min-h-[20px] mt-1" />
+        </div>
+
+        {/* Card */}
+        <div className="flex-1 min-w-0 pb-2">
+          <ExperienceCard exp={exp} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Experience({ data = defaultPortfolioData }: { data?: PortfolioData }) {
   const experiences = data.experience ?? [];
   if (experiences.length === 0) return null;
@@ -108,7 +123,7 @@ export default function Experience({ data = defaultPortfolioData }: { data?: Por
   const titleInView = useInView(titleRef, { once: true });
 
   return (
-    <section id="experience" className="py-28 px-6 relative overflow-hidden">
+    <section id="experience" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#050b18] via-[#080f22] to-[#050b18] pointer-events-none" />
       <div className="absolute top-1/2 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-[80px] pointer-events-none" />
 
@@ -118,20 +133,20 @@ export default function Experience({ data = defaultPortfolioData }: { data?: Por
           initial={{ opacity: 0, y: 30 }}
           animate={titleInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="text-center mb-14 sm:mb-20"
         >
           <span className="text-purple-400 text-sm font-semibold uppercase tracking-widest">Career Journey</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
             Work <span className="gradient-text">Experience</span>
           </h2>
-          <p className="text-slate-500 mt-4 max-w-xl mx-auto">
+          <p className="text-slate-500 mt-4 max-w-xl mx-auto text-sm sm:text-base">
             16+ years delivering enterprise-scale solutions from Chennai to Singapore
           </p>
         </motion.div>
 
         {/* Timeline */}
         <div className="relative">
-          {/* Center line on desktop */}
+          {/* Center line — desktop only */}
           <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px timeline-line" />
 
           {experiences.map((exp, i) => (

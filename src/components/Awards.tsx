@@ -18,7 +18,7 @@ export default function Awards({ data = defaultPortfolioData }: { data?: Portfol
   if (!hasAwards && !hasEducation && !hasLanguages && !hasDomains) return null;
 
   return (
-    <section id="awards" className="py-28 px-6 relative">
+    <section id="awards" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#080f22] to-[#050b18] pointer-events-none" />
       <div className="absolute top-1/3 right-0 w-80 h-80 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -30,7 +30,7 @@ export default function Awards({ data = defaultPortfolioData }: { data?: Portfol
           className="text-center mb-16"
         >
           <span className="text-yellow-400 text-sm font-semibold uppercase tracking-widest">Recognition</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
             Awards & <span className="gradient-text-gold">Education</span>
           </h2>
         </motion.div>

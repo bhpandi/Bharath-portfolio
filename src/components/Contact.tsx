@@ -16,7 +16,7 @@ export default function Contact({ data = defaultPortfolioData }: { data?: Portfo
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="contact" className="py-28 px-6 relative overflow-hidden">
+    <section id="contact" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[#080f22] pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-blue-600/8 rounded-full blur-[100px] pointer-events-none" />
 
@@ -28,7 +28,7 @@ export default function Contact({ data = defaultPortfolioData }: { data?: Portfo
           className="text-center mb-16"
         >
           <span className="text-blue-400 text-sm font-semibold uppercase tracking-widest">Let&apos;s Connect</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
             Get in <span className="gradient-text">Touch</span>
           </h2>
           <p className="text-slate-400 mt-4 max-w-xl mx-auto leading-relaxed">

@@ -125,7 +125,7 @@ export default function Hero({ data = defaultPortfolioData }: { data?: Portfolio
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-purple-600/8 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24">
+      <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pt-24 pb-6">
         {/* Profile photo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -173,7 +173,7 @@ export default function Hero({ data = defaultPortfolioData }: { data?: Portfolio
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.7 }}
-          className="text-5xl sm:text-7xl font-extrabold text-white mb-4 tracking-tight leading-none"
+          className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-4 tracking-tight leading-none"
         >
           {firstName}{" "}
           <span className="gradient-text">{lastName}</span>
@@ -246,7 +246,7 @@ export default function Hero({ data = defaultPortfolioData }: { data?: Portfolio
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.85 }}
-          className="flex flex-wrap gap-4 justify-center mb-20"
+          className="flex flex-wrap gap-3 sm:gap-4 justify-center mb-12 sm:mb-20"
         >
           <a href="#experience" className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5">
             View Experience

@@ -19,7 +19,7 @@ export default function About({ data = defaultPortfolioData }: { data?: Portfoli
   if (!hasContent && highlights.length === 0) return null;
 
   return (
-    <section id="about" className="py-28 px-6 relative">
+    <section id="about" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#050b18] via-[#080f20] to-[#050b18] pointer-events-none" />
 
       <div ref={ref} className="max-w-6xl mx-auto relative z-10">
@@ -30,7 +30,7 @@ export default function About({ data = defaultPortfolioData }: { data?: Portfoli
           className="text-center mb-16"
         >
           <span className="text-blue-400 text-sm font-semibold uppercase tracking-widest">About Me</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
             Who I <span className="gradient-text">Am</span>
           </h2>
         </motion.div>

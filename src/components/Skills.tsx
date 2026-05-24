@@ -38,7 +38,7 @@ export default function Skills({ data = defaultPortfolioData }: { data?: Portfol
   if (activeGroups.length === 0 && activeBadges.length === 0) return null;
 
   return (
-    <section id="skills" className="py-28 px-6 relative">
+    <section id="skills" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[#080f22] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-blue-600/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -50,7 +50,7 @@ export default function Skills({ data = defaultPortfolioData }: { data?: Portfol
           className="text-center mb-16"
         >
           <span className="text-teal-400 text-sm font-semibold uppercase tracking-widest">Technical Arsenal</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
             Skills & <span className="gradient-text">Technologies</span>
           </h2>
         </motion.div>

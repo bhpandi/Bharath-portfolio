@@ -3,6 +3,11 @@
 :root {
   --background: #050b18;
   --foreground: #e2e8f0;
+  /* Safe areas for iPhone notch / Dynamic Island */
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
 }
 
 @theme inline {
@@ -14,10 +19,14 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal scroll globally */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -25,6 +34,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, sans-serif;
   overflow-x: hidden;
+  max-width: 100vw;
+  /* Better text rendering on mobile */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Scrollbar */
@@ -152,4 +166,68 @@ body {
 @keyframes twinkle {
   0%, 100% { opacity: 0.2; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* ── Mobile / PWA enhancements ──────────────────────────────────────── */
+
+/* Install banner slide-in animation */
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.animate-in {
+  animation-fill-mode: both;
+}
+.slide-in-from-bottom-4 {
+  animation: slide-in-from-bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.duration-500 {
+  animation-duration: 0.5s;
+}
+
+/* Bottom nav safe-area aware */
+.bottom-nav-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.nav-open {
+  overflow: hidden;
+}
+
+/* Touch-friendly active states */
+@media (hover: none) {
+  .card-hover:active {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  .card-hover:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Better tap target sizing on mobile */
+@media (max-width: 767px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Inline / chip-style elements can be smaller */
+  .chip {
+    min-height: unset;
+    min-width: unset;
+  }
+}
+
+/* Smooth sections on mobile */
+@media (max-width: 767px) {
+  section {
+    overflow-x: hidden;
+  }
+}
+
+/* Safe area padding for fixed bottom elements */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
 }
