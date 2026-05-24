@@ -180,7 +180,7 @@ function SignInForm({ onAuth, hasAccount, onSwitchToSignUp }: { onAuth: () => vo
           <div className="mt-5 pt-5 border-t border-white/5 space-y-3 text-center">
             {!hasAccount && (
               <button onClick={onSwitchToSignUp} className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
-                Create your admin account →
+                Create your account →
               </button>
             )}
             <p className="text-slate-600 text-xs">
@@ -238,8 +238,8 @@ function SignUpForm({ onAuth, onSwitchToSignIn }: { onAuth: () => void; onSwitch
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-blue-900/40">
             <User size={28} className="text-white" />
           </div>
-          <h1 className="text-white text-2xl font-bold mb-1">Create admin account</h1>
-          <p className="text-slate-500 text-sm">Set up your portfolio admin access</p>
+          <h1 className="text-white text-2xl font-bold mb-1">Create your account</h1>
+          <p className="text-slate-500 text-sm">Set up your portfolio dashboard</p>
         </div>
 
         <div className="glass-card rounded-2xl p-8">
@@ -1074,7 +1074,7 @@ export default function AdminPage() {
               {initials || "P"}
             </div>
             <div>
-              <p className="text-white font-semibold text-sm leading-none">Portfolio Admin</p>
+              <p className="text-white font-semibold text-sm leading-none">Portfolio Dashboard</p>
               {unsaved && <p className="text-amber-400 text-xs mt-0.5">Unsaved changes</p>}
             </div>
           </div>

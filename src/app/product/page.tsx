@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "PortfolioKit — Professional Portfolio & Resume Builder",
-  description: "A premium Next.js portfolio template with admin panel, live publish, DOCX/PDF resume download in 3 styles. Deploy on Vercel in minutes.",
+  description: "A premium Next.js portfolio template with a built-in content dashboard, live publish, DOCX/PDF resume download in 3 styles. Deploy on Vercel in minutes.",
 };
 
 const FEATURES = [
@@ -15,7 +15,7 @@ const FEATURES = [
   },
   {
     icon: "🎨",
-    title: "Visual Admin Panel",
+    title: "Visual Dashboard",
     desc: "Edit every section — profile, experience, skills, awards — through a polished password-protected dashboard.",
     color: "from-purple-500 to-pink-400",
   },
@@ -34,13 +34,13 @@ const FEATURES = [
   {
     icon: "✏️",
     title: "Fully Editable",
-    desc: "Every word, every section, every skill — completely editable through the admin. No code changes needed.",
+    desc: "Every word, every section, every skill — completely editable through your dashboard. No code changes needed.",
     color: "from-teal-500 to-green-400",
   },
   {
     icon: "🔒",
     title: "Secure by Default",
-    desc: "Admin panel protected by a password you control. Content served from Vercel's global CDN.",
+    desc: "Dashboard protected by a password you control. Content served from Vercel's global CDN.",
     color: "from-rose-500 to-pink-400",
   },
 ];
@@ -77,7 +77,7 @@ const RESUME_STYLES = [
 
 const HOW_IT_WORKS = [
   { step: "01", title: "Deploy to Vercel", desc: "Click Deploy, connect your GitHub, and your portfolio is live in under 2 minutes." },
-  { step: "02", title: "Fill in your content", desc: "Go to /admin, enter your password, and fill in your profile, experience, and skills." },
+  { step: "02", title: "Fill in your content", desc: "Open your dashboard, create your account, and fill in your profile, experience, and skills." },
   { step: "03", title: "Publish & share", desc: "Hit Publish and your portfolio updates instantly. Share the URL with confidence." },
 ];
 
@@ -120,7 +120,7 @@ export default function ProductPage() {
           </h1>
 
           <p className="text-slate-400 text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            A premium portfolio template with a built-in admin panel, live publishing, and professional resume download in 3 styles. Deploy on Vercel in minutes.
+            A premium portfolio template with a built-in content dashboard, live publishing, and professional resume download in 3 styles. Deploy on Vercel in minutes.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
@@ -271,7 +271,7 @@ export default function ProductPage() {
         <p className="text-slate-600 text-xs">Built with Next.js & deployed on Vercel</p>
         <div className="mt-4 flex justify-center gap-6">
           <Link href="/" className="text-slate-600 hover:text-slate-400 text-xs transition-colors">Live Demo</Link>
-          <Link href="/admin" className="text-slate-600 hover:text-slate-400 text-xs transition-colors">Admin</Link>
+          <Link href="/admin" className="text-slate-600 hover:text-slate-400 text-xs transition-colors">Dashboard</Link>
           <Link href="/resume" className="text-slate-600 hover:text-slate-400 text-xs transition-colors">Resume</Link>
         </div>
       </footer>
