@@ -26,7 +26,7 @@ export async function publishPortfolioData(
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   try {
     const blob = await put(PORTFOLIO_KEY, JSON.stringify(data), {
-      access: "private",
+      access: "public",
       contentType: "application/json",
       allowOverwrite: true,
     });

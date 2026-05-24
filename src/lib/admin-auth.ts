@@ -109,7 +109,7 @@ export async function createAdminAccount(
 
   try {
     await put(CRED_KEY, JSON.stringify(credentials), {
-      access: "private",
+      access: "public",
       addRandomSuffix: false,
     });
   } catch (err: unknown) {
